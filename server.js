@@ -511,36 +511,7 @@ async function revealStage(){
 			break;
 		}
 	}
-	/*
-	else{
-		console.log("BATTLE");
-		worldState=3;
-		let avgPower = 0;
 
-		for (let i = 0;i<3;i++){
-			if (users[0].creature[i]){
-				avgPower += users[0].creature[i].power;
-			}
-			if (users[1].creature[i]){
-				avgPower -= users[1].creature[i].power;
-			}
-			if (users[0].creature[i] && users[1].creature[i]){
-				if (users[0].creature[i].power > users[1].creature[i].power){
-					users[1].creature[i].destroyCard();
-				}else if (users[0].creature[i].power < users[1].creature[i].power){
-					users[0].creature[i].destroyCard();
-				}else{
-					users[0].creature[i].destroyCard();
-					users[1].creature[i].destroyCard();
-				}
-			}
-		}
-		//(users[0].creature[0].power + users[0].creature[1].power + users[0].creature[2].power) - (users[1].creature[0].power + users[1].creature[1].power + users[1].creature[2].power);
-		//console.log("LITERALLY SENDING")
-		io.to(users[0].sock.id).emit("battle",users[0].sock.id,avgPower);
-		io.to(users[1].sock.id).emit("battle",users[0].sock.id,avgPower);
-	}
-	*/
 	
 }
 async function battleStage(){
@@ -558,16 +529,7 @@ async function battleStage(){
 		if (users[0].creature[i] && users[1].creature[i]){
 			users[0].creature[i].onBattle(users[1].creature[i]);
 			users[1].creature[i].onBattle(users[0].creature[i]);
-			/*
-			if (users[0].creature[i].power > users[1].creature[i].power){
-				users[1].creature[i].destroyCard();
-			}else if (users[0].creature[i].power < users[1].creature[i].power){
-				users[0].creature[i].destroyCard();
-			}else{
-				users[0].creature[i].destroyCard();
-				users[1].creature[i].destroyCard();
-			}
-			*/
+
 		}
 	}
 	updateBoard();
@@ -668,53 +630,9 @@ async function askTriggers(play){
 		let userInputs = await SyncEmit(users[play].sock,"pickCard",{"ids":trigIds,"optional":true});
 		//console.log(userInputs);
 		return userInputs;
-		if (userInputs != ""){
-			console.log("given card");
-			let tcard = undefined;
-			for (let i=0;i<users[play].trigger.length;i++){
-				if (users[play].trigger[i] != null){
-					if (users[play].trigger[i].id == userInputs){
-						tcard= users[play].trigger[i]
-					}
-				}
-			}
-			if (tcard.canReveal(chain)){
-				console.log("can be revealed");
-				tcard.revealCard(chain);
-				updateBoard();
-				chain.push(["REVEAL",users.indexOf(users[play]),tcard]);
-				updateStatus(0,2);
-				updateStatus(1,2);
-				checkTriggers(1-users.indexOf(users[play]));
-			}
-		}else{
-			console.log("no card here");
-			updateStatus(users.indexOf(users[play]),4);
-			if (gameState[1-users.indexOf(users[play])] != 4){
-				checkTriggers(1-users.indexOf(users[play]));
-			}else{
-				resolveChain();
-			}
-		}
-		//updateStatus(1-play,4);
-		//if (gameState[1-play])
-		/*
-		updateStatus(play,3);
-		updateStatus(1-play,4);
-		
-		*/
 	}
 	return "skip";
-	/*
-	else{
-		updateStatus(play,4);
-		if (gameState[1-play] != 4){
-			checkTriggers(1-play);
-		}else{
-			resolveChain();
-		}
-	}
-	*/
+
 }
 async function resolveChain(){
 	tempChain =[];
@@ -988,103 +906,12 @@ io.on('connection', (socket) => { //WHEN PLAYER JOINS
 	  	});
 		users.splice(users.indexOf(p[0]),1);
 	});
-	socket.on('place', (cardID,position, callback) => {
-		let successful = false;
-		//console.log(cardID);
-		var p = users.filter(obj => {
-			return obj.sock.id === socket.id
-	  	});
-		if (gameState[users.indexOf(p[0])] == 0){
-			//console.log(card);
-			//console.log(card.name);
-			
-			
-			for (i=0;i<p[0].hand.length;i++){
-				//console.log(p[0].hand[i].name.join());
-				if (p[0].hand[i].id  == cardID){
-					//console.log(card.name);
-					let temp = parseInt(position.replace("click",""));
-					if (p[0].hand[i].type == "CREATURE"){
-						if (p[0].creature[temp] ==null){
-							if (!p[0].placedCreature){
-								p[0].placedCreature=true;
-								p[0].creature[temp] = p[0].hand[i];
-								p[0].place(p[0].hand[i],i,temp);
-								successful = true;
-							}
-
-						}
-					}else if (p[0].hand[i].type == "TRIGGER"){
-						if (p[0].trigger[temp] == null){
-							p[0].trigger[temp] = p[0].hand[i];
-							p[0].place(p[0].hand[i],i,temp);
-							successful = true;
-						}else{
-							console.log("filled")
-						}
-					}else{
-						console.log("You what?")
-					}
-					
-					//p[0].hand.splice(i,1);
-				}
-			}
-			//console.log(position);
-			if (successful){
-				if (gameState[1-users.indexOf(p[0])]==-1){
-					updateStatus(users.indexOf(p[0]),-1);
-					updateStatus(1-users.indexOf(p[0]),0)
-					io.to(users[1-users.indexOf(p[0])].sock.id).emit("pickPlace","")
-				}else{
-					updateStatus(users.indexOf(p[0]),0)
-					io.to(users[users.indexOf(p[0])].sock.id).emit("pickPlace","")
-				}
-				
-			}
-			callback({
-				status: successful
-			});
-		}
-	});
-	socket.on("skipPlace", function(){
-		var p = users.filter(obj => {
-			return obj.sock.id === socket.id
-	  	});
-		if (gameState[users.indexOf(p[0])] == 0){
-			if (gameState[1-users.indexOf(p[0])]==1){
-				updateStatus(0,2);
-				updateStatus(1,2);
-				revealStage();
-			}else{
-				updateStatus(users.indexOf(p[0]),1);
-				updateStatus(1-users.indexOf(p[0]),0)
-				io.to(users[1-users.indexOf(p[0])].sock.id).emit("pickPlace","")
-			}
-		}
-	});
-	socket.on("activateAns", (id) => {
-		console.log("No problem here");
-		var p = users.filter(obj => {
-			return obj.sock.id === socket.id
-	  	});
-		if (gameState[users.indexOf(p[0])] == 3){
-			console.log("Yep we want that input");
-			userInputs = id;
-		}
-	});
 });
 
 var token = function() {
 	return (Math.random().toString(36).substr(2)+Math.random().toString(36).substr(2));
 };
 
-function outputTokens(){
-	let tokens = [];
-	for (i=0;i<users.length;i++){
-		tokens.push(users[i].token);
-	}
-	return tokens;
-}
 function shuffle(array) {
 	let currentIndex = array.length,  randomIndex;
   
@@ -1114,22 +941,7 @@ function SyncEmit(sock,event, data) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-function endMatch(){
-	let deadMatch = matches.splice(0,1)[0];
-	console.log("ITS OVER");
-	deadMatch.users[0].changing = true;
-	deadMatch.users[0].page = "";
-	deadMatch.users[0].state = "chill";
-	deadMatch.users[0].matchId = 0;
-	deadMatch.users[0].oldScore = [deadMatch.scores[0],deadMatch.scores[1]]
-	io.to(deadMatch.users[0].sock.id).emit("changeAccept","scoreScreen");
-	deadMatch.users[1].changing = true;
-	deadMatch.users[1].page = "";
-	deadMatch.users[1].state = "chill";
-	deadMatch.users[1].matchId = 0;
-	deadMatch.users[1].oldScore = [deadMatch.scores[1],deadMatch.scores[0]]
-	io.to(deadMatch.users[1].sock.id).emit("changeAccept","scoreScreen");
-}
+
 
 //setInterval(update,100);
 //Just network code. You can ignore.
