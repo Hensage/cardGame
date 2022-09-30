@@ -1,0 +1,4 @@
+-Sort out timing for triggers,
+-Handle multiple triggers,
+-Chaining of trigger events,
+-Dear god..

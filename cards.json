@@ -1,0 +1,494 @@
+{
+    "PRAWLING CAT":{  
+            "name":["PRAWLING","CAT"],
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":2,
+            "effect":"IF REVEALED AT START PHASE, +1 POWER"
+    },
+    "COWARDLY RAT":{  
+            "name":["COWARDLY","RAT"],
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":2,
+            "effect":"WHEN REVEALED, CAN MOVE TO EMPTY COLUMN"
+    },
+    "PACK RACCOON":{  
+            "name":["PACK","RACCOON"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"BLUE",
+            "power":3,
+            "effect":"WHEN REVEALED, SEARCH 1 RACCOON"
+    },
+    "TINY INSECT":{  
+            "name":["TINY","INSECT"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":1,
+            "effect":"CANNOT BE DESTROYED BY POWER LEVEL ABOVE 9"
+    },
+    "TRASH RACCOON":{  
+            "name":["TRASH","RACCOON"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"BROWN",
+            "power":4,
+            "effect":"WHEN REVEALED, ADD 1 CARD FROM GRAVE"
+    },
+    "SWARM INSECT":{  
+            "name":["SWARM","INSECT"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"BROWN",
+            "power":1,
+            "effect":"WHEN REVEALED, SUMMON ANY NUMBER OF SWARM INSECTS FROM YOUR DECK TO ANY EMPTY CREATURE ZONE"
+    },
+    "PRAWLING TIGER":{  
+            "name":["PRAWLING","TIGER"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"GREEN",
+            "power":6,
+            "effect":"WHEN REVEALED, ADD ANY BONUS POWER FROM TRIBUTE CREATURE. IF REVEALED AT START PHASE, +1 POWER"
+    },
+    "SCOUTING MEERKAT":{  
+            "name":["SCOUTING","MEERKAT"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":3,
+            "effect":"WEHN REVEALED, PEEK AT ONE SET CARD IN A OPPONENT TRIGGER ZONE"
+    },
+    "MOTHER BEAR":{  
+            "name":["MOTHER","BEAR"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"RED",
+            "power":12,
+            "effect":"WEHN REVEALED, SUMMON A BABY BEAR FROM DECK. IF NO BABY BEAR IN ONE OF YOUR ADJACENT CREATURE ZONE, DESTROY THIS CARD"
+    },
+    "BABY BEAR":{  
+            "name":["BABY","BEAR"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"RED",
+            "power":1,
+            "effect":""
+    },
+    "EGGEATER SNAKE":{  
+            "name":["EGGEATER","SNAKE"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"RED",
+            "power":7,
+            "effect":"WHEN REVEALED, DESTROY ONE CREATURES WITH LESS THAN 4 POWER LEVEL"
+    },
+    "EGGEATER DINOSAUR":{  
+            "name":["EGGEATER","DINOSAUR"], 
+            "type":"CREATURE",
+            "tribute":2,
+            "colour":"RED",
+            "power":10,
+            "effect":"WHEN REVEALED, DESTROY ALL CREATURES WITH LESS THAN 5 POWER LEVEL"
+    },
+    "LONE WOLF":{  
+            "name":["LONE","WOLF"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"RED",
+            "power":10,
+            "effect":"IF NOT ONLY CREATURE YOU CONTROL, DESTROY THIS CARD"
+    },
+    "STICKY SPIDER":{  
+            "name":["STICKY","SPIDER"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"YELLOW",
+            "power":2,
+            "effect":"WHEN REVEALED, TARGET 1 CREATURE. THAT CREATURE CANNOT CHANGE ZONE"
+    },
+    "ANGERED MONGOOSE":{  
+            "name":["ANGERED","MONGOOSE"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"RED",
+            "power":4,
+            "effect":""
+    },
+    "ANGERED JACKAL":{  
+            "name":["ANGERED","JACKAL"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"RED",
+            "power":8,
+            "effect":""
+    },
+    "ANGERED RHINO":{  
+            "name":["ANGERED","RHINO"], 
+            "type":"CREATURE",
+            "tribute":2,
+            "colour":"RED",
+            "power":12,
+            "effect":""
+    },
+    "ANGERED LION":{  
+            "name":["ANGERED","LION"], 
+            "type":"CREATURE",
+            "tribute":3,
+            "colour":"RED",
+            "power":16,
+            "effect":""
+    },
+    "SCARY LION":{  
+            "name":["SCARY","LION"], 
+            "type":"CREATURE",
+            "tribute":3,
+            "colour":"RED",
+            "power":11,
+            "effect":"WHEN REVEALED, RETURN ALL OTHER CREATURES TO OWNERS HANDS"
+    },
+    "BABY LION":{  
+            "name":["BABY","LION"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"RED",
+            "power":3,
+            "effect":"TREATED AS 2 TRIBUTE FOR LION"
+    },
+    "SAPPING SNAKE":{
+        "name":["SAPPING","SNAKE"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"YELLOW",
+        "power":4,
+        "effect":"WHEN REVEALED, SWAP POWER WITH A FACEUP CREATURE"
+    },
+    "POISONOUS SNAKE":{
+            "name":["POSIONOUS","SNAKE"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"YELLOW",
+            "power":2,
+            "effect":"WHEN REVEALED, TARGET 1 FACEUP CREATURE. THAT CREATURE LOSES 1 POWER EVERY START PHASE"
+    },
+    "MYSTERY EGG":{
+            "name":["MYSTERY","EGG"], 
+            "type":"CREATURE",
+            "tribute":1,
+            "colour":"GREEN",
+            "power":0,
+            "effect":"IF DESTROYED THIS TURN, AT END PHASE, SUMMON ANY 0 TRIBUTE MONSTER FROM YOUR DECK"
+    },
+    "HATCHING EGG":{
+            "name":["HATCHING","EGG"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":0,
+            "effect":"IF DESTROYED THIS TURN, AT END PHASE, FREE SUMMON ANY 0/1 TRIBUTE MONSTER FROM YOUR HAND"
+    },
+    "CLAPPING SEALION":{
+                "name":["CLAPPING","SEALION"], 
+                "type":"CREATURE",
+                "tribute":0,
+                "colour":"YELLOW",
+                "power":1,
+                "effect":"ALL CREATURES YOU CONTROL GET +3 POWER"
+    },
+    "MISSING LINK":{
+            "name":["MISSING","LINK"], 
+            "type":"CREATURE",
+            "tribute":3,
+            "colour":"YELLOW",
+            "power":99,
+            "effect":"MUST BE TRIBUTED WITH 3 MONSTERS THAT REQUIRE 3 TRIBUTES. WHEN REVEALED, WIN GAME"
+    },
+    "RABID FOX":{
+                "name":["RABID","FOX"], 
+                "type":"CREATURE",
+                "tribute":0,
+                "colour":"RED",
+                "power":7,
+                "effect":"DESTROY THIS CARD AT THE END PHASE"
+    },
+    "SHY MOLE":{
+            "name":["SHY","MOLE"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"GREEN",
+            "power":4,
+            "effect":"DURING THE END PHASE, HIDE THIS CARD"
+    },
+    "CONTROLLING PARASITE":{
+            "name":["CONTROLLING","PARASITE"], 
+            "type":"CREATURE",
+            "tribute":0,
+            "colour":"YELLOW",
+            "power":0,
+            "effect":"WHEN REVEALED, DESTROY THIS CARD, TAKE CONTROL OF 1 CREATURE YOUR OPPONENT CONTROLS. RETURN CONTROL AT END PHASE"
+    },
+    "CHARGING INSECT":{
+        "name":["CHARGING","DUNGBETTLE"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"RED",
+        "power":2,
+        "effect":"WHEN REVEALED, +3 POWER UNTIL END PHASE"
+    },
+    "CHARGING BULL":{
+        "name":["CHARGING","BULL"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"RED",
+        "power":5,
+        "effect":"WHEN REVEALED, +5 POWER UNTIL END PHASE"
+    },
+    "CHARGING RHINO":{
+        "name":["CHARGING","RHINO"], 
+        "type":"CREATURE",
+        "tribute":2,
+        "colour":"RED",
+        "power":8,
+        "effect":"WHEN REVEALED, +7 POWER UNTIL END PHASE"
+    },
+    "CRYING LAMB":{
+        "name":["CRYING","LAMB"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"BLUE",
+        "power":1,
+        "effect":"WHEN REVEALED, DRAW 1 CARD"
+    },
+    "LAUGHING HYENA":{
+        "name":["LAUGHING","HYENA"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"YELLOW",
+        "power":7,
+        "effect":"WHEN REVEALED, CAN MOVE 1 OPPONENT CREATURE INTO THIS COLUMN"
+    },
+    "CHEEKY HYENA":{
+        "name":["CHEEKY","HYENA"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"YELLOW",
+        "power":3,
+        "effect":"WHEN REVEALED, ADD 1 CHEEKY CARD TO HAND"
+    },
+    "DIGGING DOG":{
+        "name":["DIGGING","DOG"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"BROWN",
+        "power":1,
+        "effect":"WHEN REVEALED, ADD 1 DINOSAUR OR UNDEAD CREATURE FROM GRAVE TO HAND"
+    },
+    "UNDEAD PIG":{
+        "name":["UNDEAD","PIG"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"BROWN",
+        "power":5,
+        "effect":"WHEN REVEALED, CAN SUMMON 1 UNDEAD FROM GRAVE. DESTROY THIS CARD AT THE END PHASE"
+    },
+    "UNDEAD CROW":{
+        "name":["UNDEAD","CROW"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"BROWN",
+        "power":1,
+        "effect":"WHEN REVEALED, CAN SUMMON 1 UNDEAD FROM GRAVE. DESTROY THIS CARD AT THE END PHASE"
+    },
+    "UNDEAD EAGLE":{
+        "name":["UNDEAD","EAGLE"], 
+        "type":"CREATURE",
+        "tribute":2,
+        "colour":"BROWN",
+        "power":7,
+        "effect":"WHEN REVEALED, CAN PLACE 1 TRIGGER CARD FROM GRAVE IN YOUR TRIGGER ZONE. DESTROY THIS CARD AT THE END PHASE"
+    },
+    "RABID BEAR":{
+        "name":["RABID","BEAR"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"RED",
+        "power":11,
+        "effect":"DESTROY THIS CARD AT THE END PHASE"
+    },
+    "RECYCLING PIG":{
+        "name":["RECYCLING","PIG"], 
+        "type":"CREATURE",
+        "tribute":0,
+        "colour":"BLUE",
+        "power":2,
+        "effect":"WHEN REVEALED, DRAW 1 CARD, DISCARD 1 CARD"
+    },
+    "SUCKING ANTEATER":{
+        "name":["SUCKING","ANTEATER"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"BLUE",
+        "power":6,
+        "effect":"WHEN REVEALED, DISCARD 1 RANDOM OPPONENTS CARD"
+    },
+    "RIGHTOUS EAGLE":{
+        "name":["RIGHTOUS","EAGLE"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"YELLOW",
+        "power":8,
+        "effect":"WHEN REVEALED, SHUFFLE 1 CARD FROM GRAVE INTO DECK"
+    },
+    "EGGLAYING SPIDER":{
+        "name":["EGGLAYING","SPIDER"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"BLUE",
+        "power":7,
+        "effect":"WHEN THIS CARD DESTROYS CREATURE, DRAW 1 CARD"
+    },
+    "LONG SWORDFISH":{
+        "name":["LONG","SWORDFISH"], 
+        "type":"CREATURE",
+        "tribute":1,
+        "colour":"RED",
+        "power":6,
+        "effect":"CAN BATTLE ANY MONSTER"
+    },
+    "CHUNKY FOOD":{
+        "name":["CHUNKY","FOOD"], 
+        "type":"TRIGGER",
+        "colour":"RED",
+        "effect":"WHEN CREATURE ATTACKED, +4 POWER TO YOUR CREATURE UNTIL END PHASE"
+    },
+    "FAST FOOD":{
+        "name":["FAST","FOOD"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN CREATURE PLACED, MOVE TO DIFFERENT COLUMN"
+    },
+    "RIGHTOUS REBIRTH":{
+        "name":["RIGHTOUS","REBIRTH"], 
+        "type":"TRIGGER",
+        "colour":"YELLOW",
+        "effect":"WHEN CARD MOVED FROM GRAVE, SHUFFLE ALL GRAVES INTO DECKS"
+    },
+    "ANGERED STAMPEDE":{
+        "name":["ANGERED","STAMPEDE"], 
+        "type":"TRIGGER",
+        "colour":"RED",
+        "effect":"WHEN RED CREATURE REVEALED, SUMMON 1 ANGERED CREATURE FROM DECK"
+    },
+    "QUICK DEATH":{
+        "name":["QUICK","DEATH"], 
+        "type":"TRIGGER",
+        "colour":"BROWN",
+        "effect":"WHEN YOUR CREATURE REVEALED, DESTROY IT"
+    },
+    "UNDEAD REBIRTH":{
+        "name":["UNDEAD","REBIRTH"], 
+        "type":"TRIGGER",
+        "colour":"BROWN",
+        "effect":"WHEN BROWN CREATURE IS REVEALED, DISCARD 1 BROWN CARD"
+    },
+    "CHEEKY FORESIGHT":{
+        "name":["CHEEKY","FORESIGHT"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN CARD PLACED, PEEK AT CARD"
+    },
+    "TRIGGERING TRADE":{
+        "name":["TRIGGERING","TRADE"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN TRIGGER CARD PLACED, SWAP CARD WITH ONE OF YOUR PLACED TRIGGER CARDS"
+    },
+    "SOBERING FOOD":{
+        "name":["SOBERING","TRADE"], 
+        "type":"TRIGGER",
+        "colour":"YELLOW",
+        "effect":"WHEN CREATURES POWER CHANGES, RESET TO ORGINAL"
+    },
+    "FRIENDLY SPECIES":{
+        "name":["FRIENDLY","SPECIES"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN CREATURE REVEALED, SUMMON CREATURE WITH SAME SECOND NAME, RETURN ORGINAL CREATURE TO DECK IF STILL FACEUP"
+    },
+    "CLASHING ADJECTIVES":{
+        "name":["CLASHING","ADJECTIVES"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN CARD REVEALED, ADD TO HAND 1 CARD WITH SAME FIRST NAME"
+    },
+    "SHY ANIMAL":{
+        "name":["SHY","ANIMAL"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"AT THE START PHASE, FLIP 1 CREATURE FACEDOWN"
+    },
+    "FREEZING FOOD":{
+        "name":["FREEZING","FOOD"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN FOOD CARD SENT TO GRAVE, ADD CARD TO HAND"
+    },
+    "TALL GRASS":{
+        "name":["TALL","GRASS"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN A GREEN CREATURE IS SENT TO THE GRAVE, ADD CARD TO HAND"
+    },
+    "POISONOUS FANGS":{
+        "name":["POISONOUS","FANGS"], 
+        "type":"TRIGGER",
+        "colour":"YELLOW",
+        "effect":"WHEN POISONOUS CREATURE IS REVEALED, APPLY ITS EFFECT TO ALL OPPONENTS CREATURES"
+    },
+    "CHEEKY MIXUP":{
+        "name":["CHEEKY","MIXUP"], 
+        "type":"TRIGGER",
+        "colour":"GREEN",
+        "effect":"WHEN A CREATURE IS PLACED, PICK UP ALL FACEDOWN CREATURES. PLACE THEM BACK DOWN IN ANY COLUMN"
+    },
+    "STOP SIGN":{
+        "name":["STOP","SIGN"], 
+        "type":"TRIGGER",
+        "colour":"RED",
+        "effect":"WHEN CREATURE IS MOVED, MOVE THAT CREATURE TO ANY COLUMN"
+    },
+    "FENCED FIELD":{
+        "name":["FENCED","FIELD"], 
+        "type":"FIELD",
+        "colour":"YELLOW",
+        "effect":"WHEN REVEALED, TARGET 1 EMPTY COLUMN, NO CREATURES CAN BE MOVED OR PLACED THERE"
+    },
+    "ANGERED CHAOS":{
+        "name":["ANGERED","CHAOS"], 
+        "type":"FIELD",
+        "colour":"RED",
+        "effect":"ALL ANGERED CREATURS GAIN THIS EFFECT: 'WHEN THIS CARD DESTROYS A CREATURE, SUMMON 1 ANGERED CREATURE FROM DECK'"
+    },
+    "ANICENT FORESIGHT":{
+        "name":["ANICENT","FORESIGHT"], 
+        "type":"FIELD",
+        "colour":"BLUE",
+        "effect":"WHEN YOU DRAW CARD FOR START PHASE, DRAW 2, RETURN 1"
+    },
+    "UNDEAD GAMBLE":{
+        "name":["UNDEAD","GAMBLE"], 
+        "type":"FIELD",
+        "colour":"BROWN",
+        "effect":"AT THE START PHASE, MILL THE TOP CARD OF YOUR DECK"
+    },
+    "GREEN FLAME":{
+        "name":["GREEN","FLAME"], 
+        "type":"FIELD",
+        "colour":"GREEN",
+        "effect":"IF 3 GREEN CREATURES YOU CONTROL ARE FLIPPED UP AT BATTLE PHASE, DEAL 2 DAMAGE TO YOUR OPPONENT"
+    }
+}

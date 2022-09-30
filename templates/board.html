@@ -1,0 +1,552 @@
+<html>
+    <head>
+    </head>
+    <style>
+        #Body{
+            background-image:url('/playBoard.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: contain;
+            background-position: center;
+        }
+        #data{
+            position: absolute;
+            top:1%;
+            left:1%;
+            max-width: 20%;
+
+        }
+        #status{
+            position: absolute;
+            top:1%;
+            left:80%;
+            max-width: 20%;
+
+        }
+        #skip{
+            position: absolute;
+            left:calc(50vw + 30vh);
+            top: 85vh;
+            width:5vw;
+            height:9vh;
+            visibility: hidden;
+            background: rgb(72, 106, 149);
+            border-color: rgb(180, 215, 255);
+            border-width: 0.2em;
+            font-size: 3vh;
+            font-family: "Impact";
+        }
+        #skip:hover{
+            background: rgb(98, 136, 186);
+            cursor:pointer;
+        }
+        .card{
+            height:14vh;
+            position: absolute;
+            vertical-align: middle;
+            transition: 0.5s all;
+            transform-origin: center;
+        }
+
+        #pointer{
+            position: absolute;
+            left:calc(50vw - 26vh);
+            top: 43vh;
+            height:15vh;
+            transform-origin: center;
+            transition: 0.5s all;
+            text-align: center;
+        }
+        #phase{
+            font-size: 4vh;
+            font-family: "Impact";
+            position: absolute;
+            left:calc(50vw - 22.8vh);
+            top: 44vh;
+        }
+        .hp{
+            font-size: 4vh;
+            font-family: "Impact";
+        }
+        #p1hp{
+            position: absolute;
+            left:calc(50vw - 32vh);
+            top: 68vh;
+            transition: 0.5s all;
+        }
+        #b1{
+            position: absolute;
+            left:calc(50vw - 37.5vh);
+            top: 71vh;
+            height:11vh;
+            width: 4.4vh;
+            transform-origin: top;
+            transform: scaleY(0);
+        }
+        #p2hp{
+            position: absolute;
+            left:calc(50vw + 28vh);
+            top: 17vh;
+            transition: 0.5s all;
+        }
+        #b2{
+            position: absolute;
+            left:calc(50vw + 33.5vh);
+            top: 19vh;
+            height:11vh;
+            width: 4.5vh;
+            transform-origin: bottom;
+            transform: scaleY(0);
+        }
+        #viewing{
+            background-color: rgba(195, 194, 194,0.6);
+            position: fixed;
+            bottom: 0;
+            height:50vh;
+            width: 84vh;
+            left:calc(50vw - 42vh);
+            z-index: 1;
+            visibility: hidden;
+        }
+        .view{
+            opacity: 100%;
+            position: static;
+        }
+        .card:hover{
+            transform: scale(1.2);
+        }
+        .use{
+            filter: brightness(120%) drop-shadow(0 0 0.75rem crimson);
+        }
+
+        @keyframes drawMove {
+            from {
+                left : calc(50vw + 30vh);
+                top : 68vh;
+            }
+            to {
+                left :var(--aniEndX);
+                top:var(--aniEndY);
+            }
+        }
+        @keyframes battleAni {
+            0% {
+                transform: translateY(0%);
+            }
+            33%{
+                transform: translateY(calc(var(--player) * 20%));
+            }
+            66%{
+                transform: translateY(calc(var(--player) * -30%));
+            }
+            100% {
+                transform: translateY(0%);
+            }
+        }
+        @keyframes bulge {
+            0%{
+                transform: scale(1);
+            }
+            50%{
+                transform: scale(2);
+            }
+            100%{
+                transform: scale(1);
+            }
+        }
+    </style>
+    <body id="Body">
+        <div id="data">
+            <p id = "name"></p>
+            <p id = "colour"></p>
+            <p id = "type"></p>
+            <p id = "effect"></p>
+            <p id = "power"></p>
+            <p id = "tribute"></p>
+        </div>
+        <div id= "status">
+            <p id ="stext">WAIT TO PLACE</p>
+        </div>
+        <img id="pointer" src = "pointer.png">
+        <p id="phase">W</p>
+        <button id="skip" onclick="skipPlace()">SKIP</button>
+        <p id="p1Hp" class = "hp">50</p>
+        <img id ="b1" src = "blocker.png">
+        <p id="p2Hp" class = "hp">50</p>
+        <img id ="b2" src = "blocker.png">
+        <div id ="viewing">
+            <!--<img class ="card view" src = "BLUE_CREATURE.png">
+            <img class ="card view" src = "BLUE_CREATURE.png">-->
+        </div>
+    </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script>
+        var turnPlayer = false;
+        var cards = [];
+        var p1handSize = 0;
+        var p2handSize = 0;
+        var token2 = token()
+        var socket = io({
+            auth: {
+                token: token2
+            }
+        });
+        socket.on('connect', function() {
+            socket.emit('message', {data: 'I\'m connected!'});
+        });
+        socket.on('cardPlace', function() {
+            console.log("HEY")
+            //socket.emit('message', {data: 'I\'m connected!'});
+        });
+        var response = "";
+        socket.on("pickCard",(json)=>{
+            console.log("WHHYYYY")
+            for (let i =0;i< json["ids"].length;i++){
+                var p = cards.filter(obj => {
+				    return obj.id === json["ids"][i];
+			    });
+                p[0].triggerable = true;
+                p[0].img.classList.add("use");
+            }
+            response = "pickCardR";
+            if (json["optional"]){
+                document.getElementById("skip").style.visibility = "visible";
+            }
+        });
+
+        socket.on("pickPos",(json) => {
+            console.log(json["poss"].length);
+            for (let i = 0;i<json["poss"].length;i++){
+                const img = document.createElement("img");
+                img.src = "/clickable.png";
+                img.id = json["poss"][i][0]+"😊"+json["poss"][i][1];
+                img.onclick = ()=>selectZone(img.id);
+                img.classList.add("card");
+                img.classList.add("click");
+                if (json["poss"][i][0] == socket.id){
+                    img.style.left = "calc(50vw + "+p1[json["poss"][i][1]-1][0]+"vh)";
+                    img.style.top = p1[json["poss"][i][1]-1][1]+"vh";
+                }else {
+                    img.style.left = "calc(50vw + "+p2[json["poss"][i][1]-1][0]+"vh)";
+                    img.style.top = p2[json["poss"][i][1]-1][1]+"vh";
+                }
+                document.getElementById('Body').appendChild(img);
+            }
+            if (json["optional"]){
+                document.getElementById("skip").style.visibility = "visible";
+            } 
+        });
+        var vcards = [];
+        socket.on("cardView",(cardJson)=>{
+            console.log("GAYGAYGAY");
+            for (var key in cardJson){
+                let temp = new card(key,cardJson[key],false);
+                
+                temp.img.classList.add("view");
+                temp.img.onclick = ()=>clickViewCard(temp);
+                vcards.push(temp)
+                document.getElementById('viewing').appendChild(temp.img);
+            }
+            document.getElementById("viewing").style.visibility = "visible";
+        });
+        socket.on("updateBoard", (cardJson) => {
+            console.log(cardJson);
+            let graves = 0;
+            for (var key in cardJson){
+                let inPlay = false;
+                for (let i=0;i<cards.length;i++){
+                    if (cards[i].id == key){
+                        cards[i].updateData(cardJson[key],true);
+                        inPlay = true
+                        break;
+                    }
+                }
+                if (!inPlay){
+                    cards.push(new card(key,cardJson[key],true))
+                }
+            }
+            for (let i=0;i<cards.length;i++){
+                let stillIn = false;
+                for (var key in cardJson){
+                    if (key == cards[i].id){
+                        stillIn = true;
+                        break;
+                    }
+                }
+                if (!stillIn){
+                    cards[i].img.remove();
+                    cards.splice(i,1);
+                }
+            }
+        });
+        socket.on("updateStatus",(num)=>{
+            let text = "";
+            switch(num){
+                case 0: text = "WAIT TO PLACE"; break;
+                case 1: text = "PLACE CARD"; break;
+                case 2: text = "WAIT TO REVEAL"; break;
+                case 3: text = "REVEALING"; break;
+                case 4: text = "ACTIVATE EFFECT?"; break;
+                case 5: text = "OPPONENT CAN ACTIVATE"; break;
+                case 6: text = "BATTLING"; break;
+                //case 5: text = "WAITING ON OPPONENT"; break;
+            }
+            document.getElementById("stext").innerHTML=text;
+        });
+        socket.on("phaseChange",(worldNum)=>{
+            let text = "";
+            switch(worldNum){
+                case 0: text = "S"; break;
+                case 1: text = "P"; break;
+                case 2: text = "M"; break;
+                case 3: text = "R"; break;
+                case 4: text = "B"; break;
+                case 5: text = "E"; break;
+            }
+            document.getElementById("phase").innerHTML=text;
+        });
+        socket.on("activateCheck",(ids)=>{
+            pickTrig = true;
+            document.getElementById("skip").style.visibility = "visible";
+            for (let i =0;i<ids.length;i++){
+                var c = cards.filter(obj => {
+			        return obj.id === ids[i]
+	  	        });
+                c[0].triggerable = true;
+                c[0].img.classList.add("use");
+            }
+        });
+        socket.on("battle",(player,result)=>{
+            console.log("BATTLING")
+            for (let i =0;i<cards.length;i++){
+                console.log("THIS IS CARD")
+                if (cards[i].cardData.position >= 7 && cards[i].cardData.position <= 9){
+                    console.log("POS")
+                    let pnum = 0;
+                    if (cards[i].cardData.player == socket.id){
+                        pnum = 1;
+                    }else{
+                        pnum=-1;
+                    }
+                    cards[i].img.style.setProperty("--player",pnum);
+                    cards[i].img.style.animation = "battleAni 0.4s";
+                    setTimeout(function(){
+                        cards[i].img.style.animation = "";
+                    },500);
+                }
+            }
+            if (socket.id == player){
+                console.log(result);
+            }
+        });
+        socket.on("updateHealth",(h1,h2)=>{
+            console.log(h1+"   "+h2);
+            document.getElementById("b1").style.transform = "scaleY("+(1-(h1/50))+")";
+            document.getElementById("b2").style.transform = "scaleY("+(1-(h2/50))+")";
+            document.getElementById("p1Hp").innerHTML = h1;
+            document.getElementById("p2Hp").innerHTML = h2;
+            document.getElementById("p1Hp").style.animation = "bulge 0.6s";
+            document.getElementById("p2Hp").style.animation = "bulge 0.6s";
+        });
+
+        socket.on("startTurn",(yes)=>{
+            if (yes){
+                turnPlayer = true;
+                document.getElementById("pointer").style.transform = "rotate(180deg)";
+            }else{
+                turnPlayer = false;
+                document.getElementById("pointer").style.transform = "rotate(0deg)";
+            }
+        });
+        function token(){
+            return Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
+        }
+    
+        //var p1h = [[-34,83],[-24,83],[-14,83],[-4,83],[6,83],[16,83],[26,83]]
+        var p1h = [[-4,83],[-14,83],[6,83],[-24,83],[16,83],[-34,83]]
+        //var p2h = [[-34,2],[-24,2],[-14,2],[-4,2],[6,2],[16,2],[26,2]]
+        var p2h = [[-4,2],[-14,2],[6,2],[-24,2],[16,2],[-34,2]]
+
+        var p1c = [[-14,53],[-4,53],[6,53]]
+        var p2c = [[-14,33],[-4,33],[6,33]]
+
+        var p1t = [[-24,68],[-14,68],[-4,68],[6,68],[16,68]]
+        var p2t = [[-24,17],[-14,17],[-4,17],[6,17],[16,17]]
+
+        var p1 = [[30,68], [-24,68],[-14,68],[-4,68],[6,68],[16,68], [-14,53],[-4,53],[6,53], [-34,53], [30,53]];
+        var p2 = [[-38,17], [-24,17],[-14,17],[-4,17],[6,17],[16,17], [-14,33],[-4,33],[6,33], [34,33], [-37,33]];
+
+        index = 1;
+
+        function clickable(toggle){
+            let loopLen = 3;
+            if (toggle){
+                loopLen = 5;
+            }
+            for (i=0;i<loopLen;i++){
+                const img = document.createElement("img");
+                img.src = "/clickable.png";
+                img.id = "click"+i;
+                img.onclick = ()=>selectZone(img.id);
+                img.classList.add("card");
+                img.classList.add("click");
+                if (toggle){
+                    img.style.left ="calc(50vw + "+p1t[i][0]+"vh)";
+                    img.style.top = p1t[i][1]+"vh";
+                }else{
+                    img.style.left ="calc(50vw + "+p1c[i][0]+"vh)";
+                    img.style.top = p1c[i][1]+"vh";
+                }
+                
+                document.getElementById('Body').appendChild(img);
+            }
+        }
+
+        function details(info){
+            try{
+                if (info.name){document.getElementById("name").innerHTML=info.name}else{document.getElementById("name").innerHTML=""}
+                if (info.colour){document.getElementById("colour").innerHTML=info.colour}else{document.getElementById("colour").innerHTML=""}
+                if (info.type){document.getElementById("type").innerHTML=info.type}else{document.getElementById("type").innerHTML=""}
+                if (info.effect){document.getElementById("effect").innerHTML=info.effect}else{document.getElementById("effect").innerHTML=""}
+                if (info.type=="CREATURE"){
+                    document.getElementById("power").innerHTML="POWER: "+(parseInt(info.power)+parseInt(info.change));
+                    if (parseInt(info.change) != 0){
+                        document.getElementById("power").style.color = "red";
+                    }
+                    document.getElementById("tribute").innerHTML="TRIBUTE: "+info.trib;
+                }else{
+                    document.getElementById("power").innerHTML="";
+                    document.getElementById("tribute").innerHTML="";
+                }
+            }catch(E){
+                document.getElementById("name").innerHTML="";
+                document.getElementById("colour").innerHTML="";
+                document.getElementById("type").innerHTML="";
+                document.getElementById("effect").innerHTML="";
+                document.getElementById("power").innerHTML="";
+                document.getElementById("tribute").innerHTML="";
+            }
+        }
+        function clickCard(ocard){
+            if (ocard.triggerable){
+                document.getElementById("skip").style.visibility = "hidden";
+                for (let i = document.getElementsByClassName("use").length-1;i>=0;i--){
+                    document.getElementsByClassName("use")[i].classList.remove("use");
+                    console.log("sending")
+                    socket.emit("pickCardR",ocard.id);
+                }
+
+            }
+        }
+        function clickViewCard(ocard){
+            document.getElementById("viewing").style.visibility = "hidden";
+            for (let i = 0;i<vcards.length;i++){
+                vcards[i].img.remove()
+            }
+            console.log(ocard.id);
+            socket.emit("cardViewR",ocard.id);
+            vcards = [];
+        }
+        function selectZone(id){
+            for (i=document.getElementsByClassName("click").length-1;i>=0;i--){
+                document.getElementsByClassName("click")[i].remove();
+            }
+            
+            let temp = id.split("😊");
+            temp[1] = parseInt(temp[1]);
+            console.log("SENDING")
+            console.log(temp);
+            socket.emit("pickPosR",temp);
+        }
+        function skipPlace(){
+            for (i=document.getElementsByClassName("click").length-1;i>=0;i--){
+                document.getElementsByClassName("click")[i].remove();
+            }
+            for (let i = document.getElementsByClassName("use").length-1;i>=0;i--){
+                document.getElementsByClassName("use")[i].classList.remove("use");
+            }
+            socket.emit(response,"skip");
+            document.getElementById("skip").style.visibility = "hidden";
+        }
+        currentId = 0;
+        class card{
+            constructor(iid,gameData,normal){
+                this.id = iid;
+                this.img = document.createElement("img");
+                this.img.id = "card"+currentId;
+                currentId++;
+                this.updateData(gameData,normal);
+                this.img.onmouseover = ()=> details(this.cardData);
+                this.img.classList.add("card");
+                this.triggerable = false;
+                if (normal){
+                    this.img.onclick = ()=>clickCard(this);
+                    document.getElementById('Body').appendChild(this.img); 
+                }               
+            }
+            updateData(cardData,normal){
+                this.cardData = cardData;
+                if (cardData.colour && cardData.flip){
+                    var imgName= "/"+cardData.colour+"_"+cardData.type+".png";
+                    this.img.src = imgName;
+                }else{
+                    this.img.src = "/card.png";
+                }
+                if (normal){
+                    if (cardData.player == socket.id){
+                        if (cardData.position == 0){ //P1 HAND
+                            this.img.style.left = "calc(50vw + "+p1h[cardData.handPos][0]+"vh)";
+                            this.img.style.top = p1h[cardData.handPos][1]+"vh";
+                        }else {
+                            this.img.style.left = "calc(50vw + "+p1[cardData.position-1][0]+"vh)";
+                            this.img.style.top = p1[cardData.position-1][1]+"vh";
+                        }
+                    }else{
+                        if (cardData.position == 0){ //P2 HAND
+                            this.img.style.left = "calc(50vw + "+p2h[cardData.handPos][0]+"vh)";
+                            this.img.style.top = p2h[cardData.handPos][1]+"vh";
+                        }else {
+                            this.img.style.left = "calc(50vw + "+p2[cardData.position-1][0]+"vh)";
+                            this.img.style.top = p2[cardData.position-1][1]+"vh";
+                        }
+                    }
+                }
+                /*
+                if (cardData.position[0]==0){ //P1 DECK
+                    this.img.style.left = "calc(50vw + 30vh)";
+                    this.img.style.top = "68vh";
+                }else if (cardData.position[0]==1){//P1 DISCARD
+                    this.img.style.left = "calc(50vw + 30vh)";
+                    this.img.style.top = "53vh";
+                 }else if (cardData.position[0]==2){ //P1 HAND
+                    this.img.style.left = "calc(50vw + "+p1h[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p1h[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==3){//P1 TRIGGER
+                    this.img.style.left = "calc(50vw + "+p1t[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p1t[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==4){//P1 CREATURE
+                    this.img.style.left = "calc(50vw + "+p1c[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p1c[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==5){ //P2 CREATURE
+                    this.img.style.left = "calc(50vw + "+p2c[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p2c[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==6){//P2 TRIGGER
+                    this.img.style.left = "calc(50vw + "+p2t[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p2t[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==7){//P2 HAND
+                    this.img.style.left = "calc(50vw + "+p2h[cardData.position[1]][0]+"vh)";
+                    this.img.style.top = p2h[cardData.position[1]][1]+"vh";
+                }else if (cardData.position[0]==8){ //P2 DISCARD
+                    this.img.style.left = "calc(50vw - 44vh)";
+                    this.img.style.top = "17vh";
+                }else if (cardData.position[0]==9){ //P2 DECK
+                    this.img.style.left = "calc(50vw - 44vh)";
+                    this.img.style.top = "33vh";
+                }
+                */
+            }
+        }
+
+    </script>
+
+</html>
