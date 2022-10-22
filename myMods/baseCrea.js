@@ -13,10 +13,12 @@ class creature extends card{
         return true;
     }
     onBattle(enemy){
+        console.log(enemy);
         if (enemy.orgiPower+enemy.chgPower>=this.orgiPower+this.chgPower){
-            this.destroyCard();
+            //this.destroyCard();
+            return true;
         }
-        return true;
+        return false;
     }
     destroyCard(){
         this.chgPower = 0;

@@ -55,8 +55,10 @@ class tiny_insect extends creature{
     }
     onBattle(){
         if (enemy.power>=this.power && enemy.power <= 9){
-            super.destroyCard();
+            return true;
+            //super.destroyCard();
         }
+        return false;
     }
 }
 class trash_raccoon extends creature{
@@ -71,7 +73,17 @@ class trash_raccoon extends creature{
 }
 class swarm_insect extends creature{
     constructor(ipos,iplayer,iboard){
-        super(['SWARM', 'INSECT'],"BROWN","WHEN REVEALED, SUMMON AS MANY SWARM INSECTS FROM YOUR DECK TO ANY EMPTY CREATURE ZONE AS POSSIBLE",1,0,ipos,iplayer,iboard)
+        super(['SWARM', 'INSECT'],"BROWN","WHEN REVEALED, SUMMON ONE SWARM INSECT FROM YOUR DECK",1,0,ipos,iplayer,iboard)
+    }
+    async onReveal(){
+        super.onReveal();
+        var p = this.player.deck.filter(obj => {
+            return (obj.name[0] === "SWARM" && obj.name[1] === "INSECT");
+        });
+        if (this.player.getCreaturesPlaces(false).length != 0 && p.length > 0){
+            await this.player.summon(this.player.deck,{"fname":"SWARM","sname":"INSECT"});
+        }
+        return null;
     }
 }
 class prawling_tiger extends creature{

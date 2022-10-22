@@ -49,7 +49,7 @@ class user{
 		this.sock =sock; //Players socket id
 		this.health = 50;
 		this.timeCheck = new Date()
-		this.deck = [new cl.quick_death(1,this,false),new cl.quick_death(1,this,false),new cl.quick_death(1,this,false),new cl.prawling_cat(1,this,false),new cl.charging_bull(1,this,false),new cl.pack_raccoon(1,this,false),new cl.pack_raccoon(1,this,false),new cl.pack_raccoon(1,this,false),new cl.cowardly_rat(1,this,false),new cl.cowardly_rat(1,this,false),new cl.trash_raccoon(1,this,false),new cl.trash_raccoon(1,this,false)]
+		this.deck = [new cl.quick_death(1,this,false),new cl.quick_death(1,this,false),new cl.swarm_insect(1,this,false),new cl.prawling_cat(1,this,false),new cl.charging_bull(1,this,false),new cl.pack_raccoon(1,this,false),new cl.pack_raccoon(1,this,false),new cl.swarm_insect(1,this,false),new cl.cowardly_rat(1,this,false),new cl.swarm_insect(1,this,false),new cl.trash_raccoon(1,this,false),new cl.swarm_insect(1,this,false)]
 		this.deck = shuffle(this.deck);
 		this.hand = []
 		this.trigger = [null,null,null,null,null]
@@ -72,8 +72,7 @@ class user{
 		await handleChain(users.indexOf(this));
 		updateBoard();
 	}
-	async place(card,handpos,pos){
-		this.hand.splice(handpos,1);
+	async place(card,pos){
 		if (card.type=="CREATURE"){
 			card.pos = 7+pos;
 		}else if (card.type=="TRIGGER"){
@@ -85,48 +84,71 @@ class user{
 		await handleChain(users.indexOf(this));
 		//console.log(card.pos);
 		card.flip = false;
-		updateBoard();
 		//io.to(this.sock.id).emit("updateBoard",hideData(this.sock.id));
 
 	}
 	async add(pile,json){
 		if (this.hand.length < 6){
-			let indexs = this.filterCards(pile,json);
-			if (indexs.length > 0){
-				let sjson  = {};
-				for (let i = 0; i< indexs.length;i++){
-					sjson[pile[indexs[i]].id] = {
-										"name":pile[indexs[i]].name,
-										"type":pile[indexs[i]].type,
-										"colour":pile[indexs[i]].colour,
-										"effect":pile[indexs[i]].effect,
-										"player":this.sock.id,
-										"flip":true
-										}
-					if (pile[indexs[i]].type=="CREATURE"){
-						sjson[pile[indexs[i]].id]["power"] = pile[indexs[i]].power;
-						sjson[pile[indexs[i]].id]["trib"] = pile[indexs[i]].trib;
-					}
-				}
-				let cid = await SyncEmit(this.sock,"cardView",sjson);
-				console.log(cid);
-				var p = pile.filter(obj => {
-					return obj.id === cid;
-				});
-				this.hand.push(p[0]);
-				p[0].flip = true;
-				chain.push(["ADD",users.indexOf(this),p[0]]);
+			let card = await this.cardSelection(pile,json);
+			if (card != null){
+				this.hand.push(card);
+				card.flip = true;
+				chain.push(["ADD",users.indexOf(this),card]);
 				await handleChain(users.indexOf(this));
-				p[0].pos = 0;
-				pile.splice(pile.indexOf(p[0]),1);
+				card.pos = 0;
+				pile.splice(pile.indexOf(card),1);
 				pile = shuffle(pile);
 				updateBoard();
-				p[0].flip = false;
+				card.flip = false;
 			}
 		}
 		
 	}
+	async cardSelection(pile,json){
+		let fcards = this.filterCards(pile,json);
+		if (fcards.length > 0){
+			let sjson  = {};
+			for (let i = 0; i< fcards.length;i++){
+				sjson[fcards[i].id] = {
+									"name":fcards[i].name,
+									"type":fcards[i].type,
+									"colour":fcards[i].colour,
+									"effect":fcards[i].effect,
+									"player":this.sock.id,
+									"flip":true
+									}
+				if (fcards[i].type=="CREATURE"){
+					sjson[fcards[i].id]["power"] = fcards[i].power;
+					sjson[fcards[i].id]["trib"] = fcards[i].trib;
+				}
+			}
+			console.log("sending view");
+			let cid = await SyncEmit(this.sock,"cardView",sjson);
+			console.log(cid);
+			var p = pile.filter(obj => {
+				return obj.id === cid;
+			});
+			if(p.length > 0){
+				if (this.checkFilter(p[0],pile,json)){
+					return p[0];
+				}else{
+					console.log("Hacky boi");
+				}
+			}
+		}else{
+			console.log("computer says no");
+		}
+		return null;
+	}
 	filterCards(pile,json){
+		var p = pile.filter(obj => {
+			return ((obj.name[0] === json["fname"] || !json["fname"]) &&
+					 (obj.name[1] === json["sname"] || !json["sname"]) &&
+					 (obj.colour === json["colour"] || !json["colour"]) &&
+					 (obj.type === json["type"] || !json["type"]));
+		});
+		//console.log(p)
+		/*
 		let indexs = [...Array(pile.length).keys()];
 		if (json["colour"]){
 			for (let i = 0;i<pile.length;i++){
@@ -156,7 +178,80 @@ class user{
 				}
 			}
 		}
-		return indexs;
+		*/
+		return p;
+	}
+	checkFilter(card,pile,json){
+		var p = pile.filter(obj => {
+			return ((obj.name[0] === json["fname"] || !json["fname"]) &&
+					 (obj.name[1] === json["sname"] || !json["sname"]) &&
+					 (obj.colour === json["colour"] || !json["colour"]) &&
+					 (obj.type === json["type"] || !json["type"]));
+		});
+
+		for (let i=0;i<p.length;i++){
+			if (p[i].id == card.id){
+				return true
+			}
+		}
+		return false;
+	}
+	async summon(pile,json,free=false){
+		let card = await this.cardSelection(pile,json);
+		if (card != null){
+			console.log("card not null")
+			let tributed = true;
+			if (card.trib <= this.getCreatures().length){
+				if (!free){
+					for (let i=0;i<card.trib;i++){
+						let movedCreature = 255;
+						let loop = true;
+						while (loop){
+							console.log("STUCK");
+							let cardID = await SyncEmit(this.sock,"pickCard",{"ids":this.getCreatures(),"optional":false});
+							for (let ci=0;ci<this.creature.length;ci++){
+								if (this.creature[ci] != null){
+									if (cardID==this.creature[ci].id){
+										//console.log("good boy")
+										movedCreature = ci;
+										loop = false;
+										break;
+									}else{
+										console.log("BITCH HACKING")
+									}
+								}
+							}
+						}
+						this.creature[movedCreature].destroyCard();
+					}
+				}
+				let poss = this.getCreaturesPlaces(false);
+				if (poss.length >0){
+					while (true){
+						console.log("STUCK2");
+						//console.log(poss);
+						let pos = await SyncEmit(this.sock,"pickPos",{"poss":poss,"optional":false});
+						//console.log(cardID+", "+pos);
+						//succ = await placeLog(this.getPlayerNum(),card.id,pos[1],[1,1])
+						if (this.creature[pos[1]-7] ==null){
+							this.creature[pos[1]-7] = card;
+							await this.place(card,pos[1]-7);
+							for (let i =0;i<pile.length;i++){
+								if (pile[i].id == card.id){
+									pile.splice(i,1);
+								}
+							}
+							updateBoard();
+							card.revealCard();
+							chain.push(["REVEAL",this.getPlayerNum(),card]);
+							await handleChain(this.getPlayerNum());
+							updateBoard();
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 	getHand(){
 		let handIDs = [];
@@ -369,7 +464,7 @@ async function placing(){
 				if (succ){
 					//chain.push(["PLACE",tnum,p[0]]);
 					//await handleChain(tnum);
-
+					updateBoard();
 					if (tStates[1-tnum] == 0){
 						updateStatus(tnum,0);
 						updateStatus(1-tnum,1);
@@ -402,7 +497,8 @@ async function placeLog(num,cardID, position,states){
 						if (!users[num].placedCreature){
 							users[num].placedCreature=true;
 							users[num].creature[position-7] = users[num].hand[i];
-							await users[num].place(users[num].hand[i],i,position-7);
+							await users[num].place(users[num].hand[i],position-7);
+							users[num].hand.splice(i,1);
 							successful = true;
 						}
 
@@ -410,7 +506,8 @@ async function placeLog(num,cardID, position,states){
 				}else if (users[num].hand[i].type == "TRIGGER"){
 					if (users[num].trigger[position-2] == null){
 						users[num].trigger[position-2] = users[num].hand[i];
-						await users[num].place(users[num].hand[i],i,position-2);
+						await users[num].place(users[num].hand[i],position-2);
+						users[num].hand.splice(i,1);
 						successful = true;
 					}else{
 						console.log("filled")
@@ -527,9 +624,13 @@ async function battleStage(){
 			avgPower -= users[1].creature[i].orgiPower+users[1].creature[i].chgPower;
 		}
 		if (users[0].creature[i] && users[1].creature[i]){
-			users[0].creature[i].onBattle(users[1].creature[i]);
-			users[1].creature[i].onBattle(users[0].creature[i]);
-
+			let des = [users[0].creature[i].onBattle(users[1].creature[i]),users[1].creature[i].onBattle(users[0].creature[i])];
+			if (des[0]){
+				users[0].creature[i].destroyCard()
+			}
+			if (des[1]){
+				users[1].creature[i].destroyCard()
+			}
 		}
 	}
 	updateBoard();
